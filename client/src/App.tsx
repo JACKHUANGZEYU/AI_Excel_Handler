@@ -5,7 +5,10 @@ import { ChatPanel } from './components/ChatPanel';
 
 function App() {
   // Explicitly type the data state
-  const [data, setData] = useState<any[][]>([[]]);
+  // Initialize with a visible 5x10 grid instead of empty [[]]
+  const [data, setData] = useState<any[][]>(
+    Array(10).fill('').map(() => Array(5).fill(''))
+  );
   const [loading, setLoading] = useState(false);
   const gridRef = useRef<any>(null);
 
@@ -13,7 +16,7 @@ function App() {
     axios.get('http://localhost:5000/api/sheet')
       // Fix: Add explicit types to arguments
       .then((res: any) => {
-        if(res.data.data && res.data.data.length > 0) setData(res.data.data);
+        if (res.data.data && res.data.data.length > 0) setData(res.data.data);
       })
       .catch((err: any) => console.error("DB Error:", err));
   }, []);
@@ -52,10 +55,10 @@ function App() {
   return (
     <div className="flex h-screen w-screen overflow-hidden">
       <div className="flex-1 h-full overflow-hidden relative">
-        <Spreadsheet 
-          data={data} 
-          onChange={handleDataChange} 
-          forwardRef={gridRef} 
+        <Spreadsheet
+          data={data}
+          onChange={handleDataChange}
+          forwardRef={gridRef}
         />
       </div>
       <ChatPanel onSend={handleChat} loading={loading} />
